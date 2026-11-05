@@ -1,6 +1,6 @@
 # Interstice
 
-[![Interstice CI](https://github.com/Topshugar/Interstice/actions/workflows/main.yml/badge.svg)](https://github.com/Topshugar/Interstice/actions/workflows/main.yml)
+[![Interstice CI](https://github.com/Topshugar/Interstice/actions/workflows/main.yml/badge.svg)](https://github.com/Topshugar/Interstice/actions/workflows/main.yml) [![Python 3.10 | 3.11 | 3.12](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 
 Find the gaps before attackers do.
 
