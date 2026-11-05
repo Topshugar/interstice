@@ -1,13 +1,48 @@
 name: Interstice CI
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
     steps:
+      # 1. Get the code
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      # 2. Set up Python from the matrix
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: pip install requests
-      - run: python -m py_compile scanner.py
-      - run: python scanner.py --help
+          python-version: ${{ matrix.python-version }}
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests flake8
+
+      # 4. Critical lint - only fails on real bugs, not style
+      # E9, F63, F7, F82 = syntax errors, undefined names
+      - name: Lint for critical errors
+        run: |
+          flake8 scanner.py --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      # 5. Style check - warning only, never fails the build
+      - name: Lint style (warning only)
+        run: |
+          flake8 scanner.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      # 6. Check scanner compiles
+      - name: Compile check
+        run: python -m py_compile scanner.py
+
+      # 7. Check fixes.json is valid JSON
+      - name: Validate fixes.json
+        run: python -m json.tool fixes.json > /dev/null
+
+      # 8. Smoke test - does --help work?
+      - name: Smoke test help
+        run: python scanner.py --help
