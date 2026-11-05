@@ -1,0 +1,12 @@
+# ============================================================================
+# INTERSTICE - PROJECT DEPENDENCIES
+# Purpose: Define only the libraries required for defensive scanning.
+# Keeping dependencies minimal reduces attack surface and install time.
+# ============================================================================
+
+# HTTP client for header analysis and HTTPS validation.
+requests==2.32.3
+
+# Linting tool used in CI to enforce code quality.
+# Only required for development, not for end users.
+flake8==7.1.1
