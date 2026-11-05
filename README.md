@@ -1,8 +1,8 @@
-
 # Interstice
 
-[Interstice CI](https://github.com/Topshugar/Interstice/actions/workflows/main.yml/badge.svg)
-**Find the gaps before attackers do.**
+[![Interstice CI](https://github.com/Topshugar/Interstice/actions/workflows/main.yml/badge.svg)](https://github.com/Topshugar/Interstice/actions/workflows/main.yml)
+
+Find the gaps before attackers do.
 
 Interstice is a defensive security scanner built for website owners and companies. 
 It scans a domain you own, identifies common security gaps, and provides a clear,
