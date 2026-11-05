@@ -1,14 +1,11 @@
 """
 INTERSTICE - Defensive Website Security Scanner
 Author: Topshugar
-Purpose: Help website owners identify and remediate security gaps in their own assets.
+Purpose: Help website owners identify and remediate security gaps.
 License: MIT
 """
 
 import argparse
-import json
-import ssl
-import socket
 import requests
 from datetime import datetime
 from urllib.parse import urlparse
@@ -20,9 +17,9 @@ from urllib.parse import urlparse
 # Security headers that every modern website should implement.
 # Missing headers do not mean the site is hacked, but they increase risk.
 REQUIRED_HEADERS = {
-    "Content-Security-Policy": "Prevents XSS and injection attacks by controlling allowed resources.",
+    "Content-Security-Policy": "Prevents XSS by controlling allowed resources.",
     "Strict-Transport-Security": "Forces HTTPS and prevents downgrade attacks.",
-    "X-Frame-Options": "Prevents clickjacking by blocking embedding in iframes.",
+    "X-Frame-Options": "Prevents clickjacking by blocking iframes.",
     "X-Content-Type-Options": "Prevents MIME-type sniffing attacks.",
     "Referrer-Policy": "Controls how much referrer information is leaked.",
 }
@@ -61,7 +58,7 @@ def check_https(domain):
             "status": "FAIL",
             "severity": "Critical",
             "detail": "SSL certificate is invalid, expired, or misconfigured.",
-            "fix": "Renew and correctly install a valid SSL certificate from a trusted provider."
+            "fix": "Renew and install a valid SSL certificate from a trusted provider."
         }
     except Exception as e:
         return {
@@ -89,7 +86,7 @@ def check_security_headers(domain):
                     "status": "FAIL",
                     "severity": "Medium",
                     "detail": f"Missing {header}. {description}",
-                    "fix": f"Configure your web server to send the {header} header."
+                    "fix": f"Configure your server to send the {header} header."
                 })
             else:
                 findings.append({
@@ -107,7 +104,7 @@ def check_security_headers(domain):
                 "status": "WARNING",
                 "severity": "Low",
                 "detail": f"Server header reveals: {headers['Server']}",
-                "fix": "Hide or minimize the Server header to avoid revealing software versions."
+                "fix": "Hide Server header to avoid revealing software versions."
             })
 
     except Exception as e:
@@ -146,16 +143,29 @@ def generate_html_report(domain, findings, score):
     """
     rows = ""
     for f in findings:
-        color = "green" if f["status"] == "PASS" else "red" if f["status"] == "FAIL" else "orange"
-        rows += f"""
-        <tr>
-            <td>{f['check']}</td>
-            <td style="color:{color}; font-weight:bold;">{f['status']}</td>
-            <td>{f['severity']}</td>
-            <td>{f['detail']}</td>
-            <td>{f['fix']}</td>
-        </tr>
-        """
+        if f["status"] == "PASS":
+            color = "green"
+        elif f["status"] == "FAIL":
+            color = "red"
+        else:
+            color = "orange"
+        rows += (
+            f"<tr><td>{f['check']}</td>"
+            f"<td style=\"color:{color}; font-weight:bold;\">{f['status']}</td>"
+            f"<td>{f['severity']}</td>"
+            f"<td>{f['detail']}</td>"
+            f"<td>{f['fix']}</td></tr>\n"
+        )
+
+    generated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    table_header = (
+        "<tr><th>Check</th><th>Status</th><th>Severity</th>"
+        "<th>Detail</th><th>Recommended Fix</th></tr>"
+    )
+    disclaimer = (
+        "This report is for defensive use on assets you own. "
+        "It identifies common gaps and does not guarantee complete security."
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -163,7 +173,7 @@ def generate_html_report(domain, findings, score):
     <meta charset="UTF-8">
     <title>Interstice Report - {domain}</title>
     <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; background: #f4f6f8; color: #222; }}
+        body {{ font-family: Arial, sans-serif; margin: 40px; background: #f4f6f8; }}
         .container {{ background: #fff; padding: 30px; border-radius: 12px; }}
         table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
         th, td {{ border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }}
@@ -175,13 +185,13 @@ def generate_html_report(domain, findings, score):
         <h1>INTERSTICE Security Report</h1>
         <h2>Target: {domain}</h2>
         <h2>Security Score: {score} / 100</h2>
-        <h2>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h2>
+        <h2>Generated: {generated}</h2>
         <h2>Findings</h2>
         <table>
-            <tr><th>Check</th><th>Status</th><th>Severity</th><th>Detail</th><th>Recommended Fix</th></tr>
+            {table_header}
             {rows}
         </table>
-        <p><strong>Disclaimer:</strong> This report is for defensive use on assets you own. It identifies common gaps and does not guarantee complete security.</p>
+        <p><strong>Disclaimer:</strong> {disclaimer}</p>
     </div>
 </body>
 </html>
@@ -199,9 +209,13 @@ def main():
     """
     Main entry point. Enforces explicit ownership confirmation before scanning.
     """
-    parser = argparse.ArgumentParser(description="INTERSTICE - Defensive Website Scanner")
+    parser = argparse.ArgumentParser(description="INTERSTICE - Defensive Scanner")
     parser.add_argument("--domain", required=True, help="Domain you own, e.g. example.com")
-    parser.add_argument("--confirm-ownership", action="store_true", help="Confirm you own this domain or have written permission")
+    parser.add_argument(
+        "--confirm-ownership",
+        action="store_true",
+        help="Confirm you own this domain or have written permission"
+    )
     args = parser.parse_args()
 
     if not args.confirm_ownership:
