@@ -1,0 +1,5 @@
+{
+  "Content-Security-Policy": "Add CSP header in Nginx / Apache to prevent XSS.",
+  "Strict-Transport-Security": "Enable HSTS with max-age=31536000.",
+  "X-Frame-Options": "Set to DENY or SAMEORIGIN to prevent clickjacking."
+}
