@@ -1,5 +1,7 @@
-# INTERSTICE
 
+# Interstice
+
+[Interstice CI](https://github.com/Topshugar/Interstice/actions/workflows/main.yml/badge.svg)
 **Find the gaps before attackers do.**
 
 Interstice is a defensive security scanner built for website owners and companies. 
