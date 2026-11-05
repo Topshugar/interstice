@@ -1,1 +1,105 @@
+# ============================================================================
+# INTERSTICE - CONTINUOUS INTEGRATION WORKFLOW
+# Purpose: Validate code quality and ensure the scanner runs correctly
+# on every push and pull request.
+# ============================================================================
 
+name: Interstice CI
+
+# ============================================================================
+# WORKFLOW TRIGGERS
+# ============================================================================
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# ============================================================================
+# PERMISSIONS
+# ============================================================================
+# Minimum permissions required for CI checks. No write access needed.
+
+permissions:
+  contents: read
+
+# ============================================================================
+# JOBS
+# ============================================================================
+
+jobs:
+  test:
+    # ========================================================================
+    # JOB: TEST AND VALIDATE
+    # Purpose: Install dependencies, lint code, and run a safe scan test.
+    # ========================================================================
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      # ----------------------------------------------------------------------
+      # STEP 1: CHECKOUT REPOSITORY
+      # Purpose: Retrieve the latest code from the repository.
+      # ----------------------------------------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------------------
+      # STEP 2: SETUP PYTHON
+      # Purpose: Configure the Python environment for the test matrix.
+      # ----------------------------------------------------------------------
+      - name: Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # ----------------------------------------------------------------------
+      # STEP 3: INSTALL DEPENDENCIES
+      # Purpose: Install only the dependencies required for scanning.
+      # ----------------------------------------------------------------------
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests flake8
+
+      # ----------------------------------------------------------------------
+      # STEP 4: LINT CODE
+      # Purpose: Enforce professional code style and catch syntax errors.
+      # ----------------------------------------------------------------------
+      - name: Lint with Flake8
+        run: |
+          flake8 scanner.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 scanner.py --count --max-complexity=10 --max-line-length=120 --statistics
+
+      # ----------------------------------------------------------------------
+      # STEP 5: VALIDATE JSON CONFIGURATION
+      # Purpose: Ensure fixes.json is valid and parseable.
+      # ----------------------------------------------------------------------
+      - name: Validate Fixes Configuration
+        run: python -m json.tool fixes.json > /dev/null && echo "fixes.json is valid"
+
+      # ----------------------------------------------------------------------
+      # STEP 6: SMOKE TEST - HELP COMMAND
+      # Purpose: Verify the scanner CLI loads without errors.
+      # Does not perform a live scan in CI.
+      # ----------------------------------------------------------------------
+      - name: Smoke Test Scanner CLI
+        run: python scanner.py --help
+
+      # ----------------------------------------------------------------------
+      # STEP 7: TEST REPORT GENERATION
+      # Purpose: Verify HTML report generation logic in isolation.
+      # Uses a local, non-network test to keep CI fast and safe.
+      # ----------------------------------------------------------------------
+      - name: Test Report Generation
+        run: |
+          python -c "
+          from scanner import generate_html_report
+          findings = [{'check': 'HTTPS Enabled', 'status': 'PASS', 'severity': 'None', 'detail': 'Test', 'fix': 'No action required.'}]
+          report = generate_html_report('example.com', findings, 100)
+          print(f'Report generated: {report}')
+          "
