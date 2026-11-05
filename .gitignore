@@ -1,0 +1,49 @@
+# ============================================================================
+# INTERSTICE - GIT IGNORE RULES
+# Purpose: Prevent sensitive reports, credentials, and system files
+# from being committed to the repository.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# PYTHON
+# Purpose: Ignore bytecode and virtual environments.
+# ----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ----------------------------------------------------------------------------
+# INTERSTICE REPORTS
+# Purpose: Scan reports contain client domain data.
+# Reports must never be committed to a public repository.
+# ----------------------------------------------------------------------------
+interstice_report_*.html
+*.html
+!index.html
+
+# ----------------------------------------------------------------------------
+# ENVIRONMENT AND SECRETS
+# Purpose: Prevent accidental exposure of API keys and credentials.
+# ----------------------------------------------------------------------------
+.env
+.env.local
+*.key
+*.pem
+config.local.json
+
+# ----------------------------------------------------------------------------
+# SYSTEM FILES
+# Purpose: Ignore OS-generated files.
+# ----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------------------------------------------
+# IDE FILES
+# Purpose: Ignore editor-specific configuration.
+# ----------------------------------------------------------------------------
+.vscode/
+.idea/
