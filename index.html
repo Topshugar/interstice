@@ -1,18 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interstice - Find the gaps before attackers do</title>
+<title>Interstice — Find the gaps before attackers do</title>
 <style>
-body{font-family:Arial;background:#0f1115;color:#fff;text-align:center;padding:60px 20px}
-h1{font-size:42px} p{color:#9ba3af} a{color:#fff;background:#D4AF37;color:#111;padding:14px 24px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block;margin-top:20px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#0B0D10;color:#fff;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+.badge{display:inline-block;background:#1A1E24;border:1px solid #2A2F37;padding:6px 12px;border-radius:999px;font-size:13px;color:#C7CCD4}
+h1{font-size:56px;letter-spacing:4px;margin-top:28px;line-height:1}
+h1 span{color:#D4AF37}
+.tag{font-size:19px;color:#9BA3AF;margin-top:14px}
+.gold{color:#D4AF37}
+.btns{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{background:#D4AF37;color:#111;padding:14px 22px;border-radius:12px;text-decoration:none;font-weight:800}
+.btn2{background:#1A1E24;color:#fff;border:1px solid #2A2F37;padding:14px 22px;border-radius:12px;text-decoration:none;font-weight:700}
+.card{background:#14171C;border:1px solid #23282F;border-radius:16px;padding:22px;margin-top:28px}
+.card h2{font-size:20px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+@media(max-width:600px){h1{font-size:40px}.grid{grid-template-columns:1fr}}
+.mini{background:#0F1215;border:1px solid #23282F;border-radius:12px;padding:16px}
+.mini b{color:#D4AF37}
+code{background:#000;border:1px solid #23282F;padding:12px 14px;border-radius:10px;display:block;overflow-x:auto;margin-top:10px;color:#E8EAF0;font-size:13px}
+.score{display:flex;gap:14px;align-items:center;margin-top:14px}
+.circle{width:84px;height:84px;border-radius:50%;border:8px solid #D4AF37;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;flex-shrink:0}
+.foot{margin-top:30px;color:#7A8190;font-size:13px;text-align:center}
+.foot a{color:#D4AF37}
 </style>
 </head>
 <body>
-<h1>INTERSTICE</h1>
-<p>Find the gaps before attackers do.</p>
-<p>Defensive Website Security Scanner — Open Source | MIT</p>
-<a href="https://github.com/Topshugar/Interstice">View on GitHub →</a>
+<div class="wrap">
+<span class="badge">🟢 CI Passing &nbsp;•&nbsp; 🔵 Python 3.10 | 3.11 | 3.12 &nbsp;•&nbsp; 🟡 MIT License</span>
+
+<h1>INTER<span>STICE</span></h1>
+<p class="tag">Find the gaps <span class="gold">before attackers do.</span><br>Defensive Website Security Scanner — Open Source.</p>
+
+<div class="btns">
+<a class="btn" href="https://github.com/Topshugar/Interstice">View on GitHub →</a>
+<a class="btn2" href="https://github.com/Topshugar/Interstice#readme">Read the Docs</a>
+</div>
+
+<div class="card">
+<h2>What Interstice checks</h2>
+<div class="grid">
+<div class="mini"><b>🔒 HTTPS + SSL</b><br>Is your site really on HTTPS? Is the certificate valid?</div>
+<div class="mini"><b>🛡️ Security Headers</b><br>CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy</div>
+<div class="mini"><b>👁️ Info Disclosure</b><br>Does your Server header leak software versions?</div>
+<div class="mini"><b>📊 Score 0-100</b><br>Clear score + severity so you know what to fix first.</div>
+</div>
+<div class="score">
+<div class="circle">82/100</div>
+<div><b>Example Report</b><br><span style="color:#9BA3AF">example.com — MEDIUM RISK<br>Missing: CSP, HSTS • Fix in 10 minutes</span></div>
+</div>
+</div>
+
+<div class="card">
+<h2>How it works</h2>
+<p style="color:#9BA3AF">1. You confirm you own the domain &nbsp;→&nbsp; 2. Interstice scans &nbsp;→&nbsp; 3. You get a clean HTML report to send to your client / team.</p>
+<code>pip install requests<br><br>python scanner.py --domain example.com --confirm-ownership</code>
+<p style="margin-top:12px;color:#9BA3AF;font-size:14px">⚠️ Only scan assets you own or have written permission to test.</p>
+</div>
+
+<div class="card">
+<h2>Why Interstice?</h2>
+<p style="color:#C7CCD4">Most scanners are scary, expensive, or made for hackers. Interstice is made for <b>website owners</b> — simple, defensive, and honest. No jargon. Just: what's missing, how bad is it, and how to fix it.</p>
+</div>
+
+<p class="foot">Built by <a href="https://github.com/Topshugar">Topshugar</a> • Open Source MIT • <a href="https://github.com/Topshugar/Interstice">Star it on GitHub ⭐</a></p>
+</div>
 </body>
 </html>
